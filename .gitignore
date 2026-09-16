@@ -28,7 +28,6 @@ coverage.*
 appsettings.json
 appsettings.*.json
 !appsettings.example.json
-!Api/appsettings.example.json
 *.pfx
 *.p12
 *.snk
