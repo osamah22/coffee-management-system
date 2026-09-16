@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: sportly
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  email:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    
+  keycloak: 
+    image: quay.io/keycloak/keycloak:26.7.3
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    command:
+      start-dev
+    ports:
+    - "127.0.0.1:8080:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak
+
+volumes:
+  postgres_data:
+  keycloak_data:
