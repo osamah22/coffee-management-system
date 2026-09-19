@@ -15,6 +15,8 @@ public static class ApiEndpoints
             public const string Create = $"{Base}";
             public const string Update = $"{Base}/{{id:guid}}";
             public const string Delete = $"{Base}/{{id:guid}}";
+            public const string Options = $"{Base}/{{coffeeId:guid}}/options";
+            public const string Option = $"{Options}/{{optionId:guid}}";
         }
     }
 }

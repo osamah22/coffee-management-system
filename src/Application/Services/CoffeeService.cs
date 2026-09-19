@@ -28,13 +28,10 @@ internal sealed class CoffeeService : ICoffeeService
     public async Task<Guid?> CreateAsync(CreateCoffeeDto command, CancellationToken ct = default)
     {
         await _createValidator.ValidateAndThrowAsync(command, ct);
-        var coffee = new Coffee(command.Name,
-            command.Description,
-            command.PriceInCents,
-            Enum.Parse<CoffeeType>(command.Type, true));
+        var coffee = new Coffee(command.Name, command.Description);
 
         if (await _coffeeRepository.ExistsBySlugAsync(coffee.Slug, ct))
-            throw new CoffeeSlugNotFoundException();
+            throw new CoffeeSlugExistsException();
         await _coffeeRepository.CreateAsync(coffee, ct);
         if (await _uow.SaveChangesAsync(ct) == 0)
             throw new InternalErrorException("coffee could not be created");
@@ -47,10 +44,7 @@ internal sealed class CoffeeService : ICoffeeService
         var coffee = await _coffeeRepository.GetByIdAsync(command.Id, ct);
         if (coffee == null)
             throw new CoffeeIdNotFoundException();
-        coffee.Update(command.Name,
-            command.Description,
-            command.PriceInCents,
-            Enum.Parse<CoffeeType>(command.Type, true));
+        coffee.UpdateCoffee(command.Name, command.Description);
         await _coffeeRepository.UpdateAsync(coffee, ct);
         if (await _uow.SaveChangesAsync(ct) == 0)
             throw new InternalErrorException("coffee could not be updated");

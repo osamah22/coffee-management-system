@@ -5,7 +5,6 @@ using Application.Services;
 using Contracts.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Wolverine;
 
 namespace Api.Controllers;
 
@@ -23,12 +22,9 @@ public sealed class CoffeeController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateCoffeeRequest request,
         CancellationToken ct)
     {
-        var cmd = new CreateCoffeeDto(request.Name,
-            request.Description,
-            request.PriceInCents,
-            request.Type);
+        var cmd = new CreateCoffeeDto(request.Name, request.Description);
         var id = await _coffeeService.CreateAsync(cmd, ct);
-        return CreatedAtAction(nameof(Get), new { idOrSlug = id });
+        return CreatedAtAction(nameof(Get), new { idOrSlug = id.ToString() }, null);
     }
 
     [HttpPut(ApiEndpoints.Coffee.V1.Update)]
@@ -36,11 +32,7 @@ public sealed class CoffeeController : ControllerBase
         [FromBody] UpdateCoffeeRequest request,
         CancellationToken ct)
     {
-        var cmd = new UpdateCoffeeDto(id,
-            request.Name,
-            request.Description,
-            request.PriceInCents,
-            request.Type);
+        var cmd = new UpdateCoffeeDto(id, request.Name, request.Description);
         await _coffeeService.UpdateAsync(cmd, ct);
         return NoContent();
     }

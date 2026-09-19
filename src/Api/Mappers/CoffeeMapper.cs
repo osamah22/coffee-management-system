@@ -10,8 +10,7 @@ public static class CoffeeMapper
         return new CoffeeResponse(coffee.Id,
             coffee.Name,
             coffee.Description,
-            coffee.PriceInCents,
-            coffee.Type.ToString(),
+            coffee.Options.Select(x => new CoffeeOptionResponse(x.Id, x.Type.ToString(), x.Size.ToString(), x.PriceInCents)),
             coffee.Slug);
     }
 }

@@ -15,16 +15,17 @@ public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.Smtp));
+        // services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.Smtp));
         _addDb(services, configuration);
         services.AddValidatorsFromAssembly(
             typeof(IServiceCollectionExtensions).Assembly,
             ServiceLifetime.Scoped,
             includeInternalTypes: true);
-        services.AddTransient<IEmailSender, EmailSender>();
         services.AddScoped<ICoffeeRepository, CoffeeRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICoffeeService, CoffeeService>();
+        services.AddScoped<ICoffeeOptionRepository, CoffeeOptionRepository>();
+        services.AddScoped<ICoffeeOptionService, CoffeeOptionService>();
         return services;
     }
     private static IServiceCollection _addDb(IServiceCollection services, IConfiguration configuration)

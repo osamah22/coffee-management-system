@@ -1,11 +1,8 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 
 namespace Application.Models;
 
-public sealed class ApplicationDbContext : IdentityDbContext<User>
+public sealed class ApplicationDbContext : DbContext
 {
     public DbSet<Coffee> Coffees => Set<Coffee>();
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -15,5 +12,4 @@ public sealed class ApplicationDbContext : IdentityDbContext<User>
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(builder);
     }
-
 }

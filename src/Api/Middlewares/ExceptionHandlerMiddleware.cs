@@ -42,7 +42,7 @@ public sealed class ExceptionHandlerMiddleware
         }
         catch (ConflictException ex)
         {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
             await context.Response.WriteAsJsonAsync(new { error = ex.Message });
         }
         catch (InternalErrorException ex)

@@ -1,7 +1,5 @@
 using Api.Middlewares;
 using Application;
-using Application.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Wolverine;
 
@@ -29,10 +27,6 @@ builder.Services.AddAuthentication()
 });
 
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddIdentityCore<User>()
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddApiEndpoints();
 
 var app = builder.Build();
 
@@ -49,6 +43,5 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapIdentityApi<User>();
 
 app.Run();

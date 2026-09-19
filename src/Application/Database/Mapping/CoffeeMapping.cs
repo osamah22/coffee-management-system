@@ -11,8 +11,9 @@ internal sealed class CoffeeMapping : IEntityTypeConfiguration<Coffee>
         builder.ToTable("coffees");
         builder.Property(x => x.Name).HasMaxLength(120);
         builder.Property(x => x.Description).HasMaxLength(400);
-        builder.Property(x => x.Type).HasConversion<string>().IsRequired();
         builder.Property(x => x.Slug).IsRequired();
         builder.HasIndex(x => x.Slug).IsUnique();
+        builder.HasMany(x => x.Options).WithOne().HasForeignKey(x => x.CoffeeId).OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(x => x.Options).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

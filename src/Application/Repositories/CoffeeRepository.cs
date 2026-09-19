@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Linq.Expressions;
 using Application.Models;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +25,7 @@ public sealed class CoffeeRepository : ICoffeeRepository
         _context.Coffees.Remove(coffee);
         return Task.CompletedTask;
     }
+
     public async Task<bool> ExistsByIdAsync(Guid id, CancellationToken ct)
     {
         return await _context.Coffees
@@ -39,15 +39,22 @@ public sealed class CoffeeRepository : ICoffeeRepository
     }
     public Task<Coffee?> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        return _context.Coffees.FirstOrDefaultAsync(c => c.Id == id, ct);
+        return _context.Coffees
+            .Include(c => c.Options.OrderBy(o => o.Type).ThenBy(o => o.Size))
+            .FirstOrDefaultAsync(c => c.Id == id, ct);
     }
     public Task<Coffee?> GetBySlugAsync(string slug, CancellationToken ct)
     {
-        return _context.Coffees.FirstOrDefaultAsync(c => c.Slug == slug, ct);
+        return _context.Coffees
+            .Include(c => c.Options.OrderBy(o => o.Type).ThenBy(o => o.Size))
+            .FirstOrDefaultAsync(c => c.Slug == slug, ct);
     }
     public async Task<IList<Coffee>> GetAllAsync(Expression<Func<Coffee, bool>> expression,
      CancellationToken ct)
     {
-        return await _context.Coffees.Where(expression).ToListAsync(ct);
+        return await _context.Coffees
+            .Include(c => c.Options.OrderBy(o => o.Type).ThenBy(o => o.Size))
+            .Where(expression)
+            .ToListAsync(ct);
     }
 }

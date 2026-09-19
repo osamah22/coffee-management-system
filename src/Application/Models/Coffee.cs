@@ -1,40 +1,39 @@
 using System.Text.RegularExpressions;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Application.Models;
 
-public enum CoffeeType
+public sealed class Coffee
 {
-    Cold,
-    Hot
-}
-public class Coffee
-{
+    private readonly List<CoffeeOption> _options = [];
     public Guid Id { get; private set; }
-    public string Name { get; private set; }
-    public string Description { get; private set; }
-    public long PriceInCents { get; private set; }
-    public string Slug { get; private set; }
-    public CoffeeType Type { get; set; }
+    public string Name { get; private set; } = null!;
+    public string Description { get; private set; } = null!;
+    public string Slug { get; private set; } = null!;
+    public IReadOnlyCollection<CoffeeOption> Options => _options;
     private Coffee() { } // requred by EF core
-    public Coffee(string name, string description, long priceInCents, CoffeeType type)
+    public Coffee(string name, string description)
     {
         Id = Guid.NewGuid();
         Name = name;
         Description = description;
-        PriceInCents = priceInCents;
-        Type = type;
         Slug = GenerateSlug();
     }
 
-    public void Update(string name, string description, long priceInCents, CoffeeType type)
+    public void UpdateCoffee(string name, string description)
     {
         Name = name;
         Description = description;
-        PriceInCents = priceInCents;
-        Type = type;
         Slug = GenerateSlug();
     }
+    public CoffeeOption AddOption(CoffeeType type, CoffeeSize size, long priceInCents)
+    {
+        if (_options.Any(x => x.Type == type && x.Size == size))
+            throw new InvalidOperationException("A coffee option with this type and size already exists.");
+        var option = new CoffeeOption(Id, type, size, priceInCents);
+        _options.Add(option);
+        return option;
+    }
+
     private string GenerateSlug()
     {
         var result = Name.ToLowerInvariant().Trim();

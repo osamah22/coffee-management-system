@@ -1,6 +1,3 @@
 namespace Contracts.Requests;
 
-public record CreateCoffeeRequest(string Name,
-    string Description,
-    long PriceInCents,
-    string Type);
+public record CreateCoffeeRequest(string Name, string Description);
